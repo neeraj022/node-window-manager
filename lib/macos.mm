@@ -105,7 +105,7 @@ AXUIElementRef getAXWindowById(int handle) {
 Napi::Array getWindows(const Napi::CallbackInfo &info) {
   Napi::Env env{info.Env()};
 
-  CGWindowListOption listOptions = kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements;
+  CGWindowListOption listOptions = kCGWindowListOptionAll | kCGWindowListExcludeDesktopElements;
   CFArrayRef windowList = CGWindowListCopyWindowInfo(listOptions, kCGNullWindowID);
 
   std::vector<Napi::Number> vec;
