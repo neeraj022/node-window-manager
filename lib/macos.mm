@@ -121,6 +121,8 @@ Napi::Array getWindows(const Napi::CallbackInfo &info) {
       vec.push_back(Napi::Number::New(env, [windowNumber intValue]));
     }
   }
+  print("WINDOWS", windowList.size());
+  print("VECTOR SIZE", vec.size());
 
   auto arr = Napi::Array::New(env, vec.size());
 
