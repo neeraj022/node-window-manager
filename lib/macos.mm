@@ -266,6 +266,36 @@ Napi::Boolean bringWindowToTop(const Napi::CallbackInfo &info) {
   return Napi::Boolean::New(env, true);
 }
 
+
+Napi::Boolean exitFullScreen(const Napi::CallbackInfo &info) {
+  Napi::Env env{info.Env()};
+
+  auto handle = info[0].As<Napi::Number>().Int32Value();
+
+  auto win = getAXWindowById(handle);
+  CFTypeRef TypeRef = nil;
+  AXUIElementCopyAttributeValue(win, CFSTR("AXFullScreen"), &TypeRef);
+  //NSLog("IS FULL SCREEN");
+  //print(CFBooleanGetValue(TypeRef));
+  BOOL isFullScreen = NO;
+  //isFullScreen = CFBooleanGetValue((CFTypeRef) TypeRef);
+  isFullScreen = ((NSNumber *) TypeRef).boolValue;
+  NSLog(isFullScreen ? @"Is full screen" : @"Is not full screen");
+  //NSLog(@"FULL SCREEN VALUE %s", isFullScreen);
+
+  if (win && isFullScreen) {
+    NSLog(@"Exiting full screen");
+    AXUIElementRef buttonRef = nil;
+    AXUIElementCopyAttributeValue(win, kAXFullScreenButtonAttribute, (CFTypeRef*)&buttonRef);
+    NSLog(@"buttonRef: %p", buttonRef);
+    AXUIElementPerformAction(buttonRef, kAXPressAction);
+    CFRelease(buttonRef);
+  }
+
+  return Napi::Boolean::New(env, true);
+}
+
+
 Napi::Boolean setWindowMinimized(const Napi::CallbackInfo &info) {
   Napi::Env env{info.Env()};
 
@@ -326,6 +356,8 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
                 Napi::Function::New(env, setWindowMaximized));
     exports.Set(Napi::String::New(env, "requestAccessibility"),
                 Napi::Function::New(env, requestAccessibility));
+    exports.Set(Napi::String::New(env, "exitFullScreen"),
+                Napi::Function::New(env, exitFullScreen));
 
     return exports;
 }
