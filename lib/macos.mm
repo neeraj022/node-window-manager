@@ -121,8 +121,6 @@ Napi::Array getWindows(const Napi::CallbackInfo &info) {
       vec.push_back(Napi::Number::New(env, [windowNumber intValue]));
     }
   }
-  print("WINDOWS", windowList.size());
-  print("VECTOR SIZE", vec.size());
 
   auto arr = Napi::Array::New(env, vec.size());
 
@@ -275,13 +273,9 @@ Napi::Boolean exitFullScreen(const Napi::CallbackInfo &info) {
   auto win = getAXWindowById(handle);
   CFTypeRef TypeRef = nil;
   AXUIElementCopyAttributeValue(win, CFSTR("AXFullScreen"), &TypeRef);
-  //NSLog("IS FULL SCREEN");
-  //print(CFBooleanGetValue(TypeRef));
   BOOL isFullScreen = NO;
-  //isFullScreen = CFBooleanGetValue((CFTypeRef) TypeRef);
   isFullScreen = ((NSNumber *) TypeRef).boolValue;
   NSLog(isFullScreen ? @"Is full screen" : @"Is not full screen");
-  //NSLog(@"FULL SCREEN VALUE %s", isFullScreen);
 
   if (win && isFullScreen) {
     NSLog(@"Exiting full screen");
